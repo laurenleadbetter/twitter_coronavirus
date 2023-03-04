@@ -66,8 +66,16 @@ with zipfile.ZipFile(args.input_path) as archive:
                     if hashtag in text:
                         counter_lang[hashtag][lang] += 1
                     counter_lang['_all'][lang] += 1
-                    if 'place' in tweet and tweet['place'] is not None and 'country_code' in tweet['place']:
-                        counter_country[tweet['place']['country_code']][hashtag] += 1
+                for hashtag in hashtags:
+                    try:
+                        country = tweet['place']['country_code']
+                    except:
+                        country = None
+                    if hashtag in text:
+                        counter_country[hashtag][country] += 1
+                    counter_country['_all'][country] += 1
+
+
 
 # open the outputfile
 try:
