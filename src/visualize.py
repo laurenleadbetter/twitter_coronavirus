@@ -25,30 +25,35 @@ if args.percent:
     for k in counts[args.key]:
         counts[args.key][k] /= counts['_all'][k]
 
-# sort the items by value in ascending order
-items = sorted(counts[args.key].items(), key=lambda item: (item[1],item[0]), reverse=True)
-print(items)
-print(type(items))
-print(type(items[1]))
+# print the count values
+#items = sorted(counts[args.key].items(), key=lambda item: (item[1],item[0]), reverse=True)
+orig_dict = dict(sorted(counts[args.key].items(), key=lambda item: (item[1],item[0]), reverse=True))
+#for k,v in items:
+ #   print(k,':',v)
 
-for k,v in items:
-    print(k,':',v)
 
-# create sorted dictionary before plotting
-lists = sorted(sorted(counts[args.key].items(), key=lambda item: (item[1],item[0]), reverse=True)[:10], key=lambda kv: kv[1])
-key, value = zip(*lists)
 
-# create bar graph
-plt.bar(key, value, color = 'maroon', width = 0.4)
+# Top 10 keys
+top_ten = dict(reversed(sorted(orig_dict.items(), key = lambda x: x[1], reverse=True)[:10]))
+key = []
+value = []
 
-if args.input_path == 'reduced.lang':
+print("Top 10" + str(top_ten))
+
+#Plotting
+plt.bar(range(len(top_ten)), list(top_ten.values()), align='center')
+plt.xticks(range(len(top_ten)), list(top_ten.keys()))
+
+plt.show()
+
+# if statements for lang/country
+if args.input_path == "reduced.lang":
     plt.xlabel("Language")
-    plt.ylabel("Usage level of " + args.key)
-    plt.title("Tweets with " + args.key + " in each language in 2020")
+    plt.ylabel("Tweets with" + args.key)
 else:
     plt.xlabel("Country")
-    plt.ylabel("Usage level of " + args.key)
-    plt.title("Tweets with " + args.key + " from each country in 2020")
+    plt.ylabel("Tweets with" + args.key)
 
-# save bar graph file to plots folder
-plt.savefig(args.input_path + args.key + 'ba.png')
+
+# save bar graph as png
+plt.savefig(args.input_path + args.key + '.png')
